@@ -4,7 +4,7 @@ import numpy as np
 from helper import *
 from policy import Policy
 
-n_gen = 100 # Number of generations
+n_gen = 10 # Number of generations
 n_pop = 100 # Starting population
 n_mutate = 5 # Number of mutations per generation
 n_breed = 5 # Number of crossovers per generation
@@ -26,7 +26,7 @@ if n_sacrifice > n_mutate + n_breed:
 
 population = []
 for i in range(n_pop):
-    policy = Policy(name, s0, hidden_units, num_actions)
+    policy = Policy(s0, hidden_units, num_actions)
     policy.gen_random()
     population.append(policy)
 
@@ -71,4 +71,7 @@ print('Best policy score = %0.2f.' %(np.max(scores)))
 
 l1, l2 = zip(*sorted(zip(scores, population)))
 champion = l2[-1]
-vis_policy(population[-1], env)
+champion.win += 1
+np.savez('champion.npz', w=champion.W, b=champion.B)
+
+print('Champion has won ' + str(champion.win) + ' game(s)!')
