@@ -1,12 +1,13 @@
 import numpy as np
-from helper import layer
 
 class Policy():
     def __init__(self, state, hidden_units, num_actions):
-        self.size_X = state.shape[0]
-        self.size_Y = state.shape[1]
+        self.state = state
+        self.size_X = self.state.shape[0]
+        self.size_Y = self.state.shape[1]
         self.hidden_units = hidden_units
         self.num_actions = num_actions
+        self.win = 0
         self.W = []
         self.B = []
 
@@ -34,3 +35,9 @@ class Policy():
         Y = np.sum(Y, 0)
 
         return np.argmax(Y)
+
+def layer(num_in, num_out):
+    w = np.random.normal(size = (num_in, num_out))
+    b = np.random.normal(size = num_out)
+    return w, b
+
