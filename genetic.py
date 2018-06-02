@@ -3,26 +3,35 @@ import gym.spaces
 import numpy as np
 from helper import *
 from policy import Policy
+#from continuous_policy import Policy
 
-n_gen = 10 # Number of generations
+n_gen = 1000 # Number of generations
 n_pop = 100 # Starting population
-n_mutate = 5 # Number of mutations per generation
-n_breed = 5 # Number of crossovers per generation
-n_sacrifice = 15 # Number of removals per generation
+n_mutate = 25 # Number of mutations per generation
+n_breed = 25 # Number of crossovers per generation
+n_sacrifice = 50 # Number of removals per generation
 hidden_units = np.array([128, 128]) # Number of kernels per layer, len(hidden_units) = number of layers
 cross_p = 0.5 # Probability of policy1 weight being used during crossover
 mut_p = 0.05 # Probability of weight mutating
 wins = 10 # Number of wins to be considered the best
+game = 'CartPole-v0' # Game to play
 
-env = gym.make('CartPole-v0')
+env = gym.make(game)
 s0 = env.reset()
 s0 = np.reshape(s0, (s0.shape[0], 1))
 num_actions = int(env.action_space.n)
+#num_actions = 1
 
 name = 0
 if n_sacrifice > n_mutate + n_breed:
     n_sacrifice = n_mutate + n_breed
     print ('Sacrifice > growth per generation. n_sacrifice lowered to ' + str(n_sacrifice))
+if n_pop <= 2:
+    n_sacrifice = 0
+    print ('Not enough population to sacrifice. n_sacrifice lowered to ' + str(n_sacrifice))
+elif n_sacrifice >= n_pop - 1:
+    n_sacrifice = n_pop - 2
+    print ('Sacrifice too large. n_sacrifice lowered to ' + str(n_sacrifice))
 
 population = []
 for i in range(n_pop):
@@ -30,20 +39,22 @@ for i in range(n_pop):
     policy.gen_random()
     population.append(policy)
 
-scores = np.zeros(n_pop)
+gen = 0
+winning = False
 
-for gen in range(n_gen):
+for generation in range(n_gen):
+    gen += 1
     scores = np.zeros(n_pop)
     for i in range(n_pop):
         scores[i] = evaluate_policy(population[i], env)
-
-    print('Generation %d: Max Score = %0.2f, Population Size = %i' %(gen+1, scores.max(), n_pop))
 
     l1, l2 = zip(*sorted(zip(scores, population)))
     scores = np.array(l1[n_sacrifice:])
     population = list(l2[n_sacrifice:])
     population[-1].win += 1
+    print('Generation %d: Max Score = %0.2f, Policy Wins = %i, Population Size = %i' %(gen, scores[-1], population[-1].win, n_pop))
     n_pop -= n_sacrifice
+
     younglings = []
     mutants = []
     for i in range(n_breed):
@@ -72,6 +83,5 @@ print('Best policy score = %0.2f.' %(np.max(scores)))
 l1, l2 = zip(*sorted(zip(scores, population)))
 champion = l2[-1]
 champion.win += 1
-np.savez('champion.npz', w=champion.W, b=champion.B)
-
+np.savez('./champions/' + game + '.npz', w=champion.W, b=champion.B)
 print('Champion has won ' + str(champion.win) + ' game(s)!')

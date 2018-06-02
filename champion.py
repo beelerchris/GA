@@ -4,10 +4,11 @@ import gym.spaces
 from policy import Policy
 from helper import *
 
-data = np.load('champion.npz')
+game = 'CartPole-v0'
+data = np.load('./champions/' + game + '.npz')
 
 hidden_units = np.array([128, 128])
-env = gym.make('CartPole-v0')
+env = gym.make(game)
 s0 = env.reset()
 s0 = np.reshape(s0, (s0.shape[0], 1))
 num_actions = int(env.action_space.n)

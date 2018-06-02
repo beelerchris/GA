@@ -58,14 +58,16 @@ def mutation(policy, p = 0.05):
 
 def evaluate_policy(policy, env):
     reward = 0
-    s = env.reset()
-    s = np.reshape(s, (s.shape[0], 1))
-    d = False
-    while not d:
-        a = policy.evaluate(s)
-        s, r, d, _ = env.step(a)
+    for i in range(3):
+        s = env.reset()
         s = np.reshape(s, (s.shape[0], 1))
-        reward += r
+        d = False
+        while not d:
+            a = policy.evaluate(s)
+            s, r, d, _ = env.step(a)
+            s = np.reshape(s, (s.shape[0], 1))
+            reward += r
+    reward = reward / 3.0
 
     return reward
 
