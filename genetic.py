@@ -3,7 +3,11 @@ import gym.spaces
 import numpy as np
 from helper import *
 from policy import Policy
+import os
 #from continuous_policy import Policy
+
+if not os.path.exists('./champions'):
+    os.makedirs('./champions')
 
 n_gen = 1000 # Number of generations
 n_pop = 100 # Starting population
