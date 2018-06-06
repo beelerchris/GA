@@ -9,14 +9,14 @@ import os
 if not os.path.exists('./champions'):
     os.makedirs('./champions')
 
-n_gen = 100 # Number of generations
+n_gen = 1000000 # Number of generations
 n_pop = 100 # Starting population
 n_mutate = 25 # Number of mutations per generation
 n_breed = 25 # Number of crossovers per generation
 n_sacrifice = 50 # Number of removals per generation
 hidden_units = np.array([128, 128]) # Number of kernels per layer, len(hidden_units) = number of layers
 cross_p = 0.5 # Probability of policy1 weight being used during crossover
-mut_p = 0.05 # Probability of weight mutating
+mut_p = 0.15 # Probability of weight mutating
 wins = 10 # Number of wins to be considered the best
 game = 'Carnot-v0' # Game to play
 
@@ -53,8 +53,14 @@ for generation in range(n_gen):
     scores = np.array(l1[n_sacrifice:])
     population = list(l2[n_sacrifice:])
     population[-1].win += 1
-    print('Generation %d: Max Score = %0.2f, Policy Wins = %i, Population Size = %i' %(gen, scores[-1], population[-1].win, n_pop))
+    print('Generation %d: Average Score = %0.2f, Max Score = %0.2f, Policy Wins = %i, Population Size = %i' %(gen, np.mean(scores), scores[-1], population[-1].win, n_pop))
     n_pop -= n_sacrifice
+
+    if gen % 100 == 0:
+        champion = population[-1]
+        champion.win += 1
+        np.savez('./champions/' + game + '_' + str(gen) + '.npz', w=champion.policy)
+        print('Champion has won ' + str(champion.win) + ' game(s)!')
 
     younglings = []
     mutants = []
@@ -85,5 +91,5 @@ print('Best policy score = %0.2f.' %(np.max(scores)))
 l1, l2 = zip(*sorted(zip(scores, population)))
 champion = l2[-1]
 champion.win += 1
-np.savez('./champions/' + game + '.npz', w=champion.W, b=champion.B)
+np.savez('./champions/' + game + '_' + str(gen) + '.npz', w=champion.policy)
 print('Champion has won ' + str(champion.win) + ' game(s)!')
