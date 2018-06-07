@@ -55,7 +55,7 @@ for generation in range(n_gen):
     scores = np.array(l1[n_sacrifice:])
     population = list(l2[n_sacrifice:])
     population[-1].win += 1
-    print('Generation %d: Max Score = %0.2f, Policy Wins = %i, Population Size = %i' %(gen, scores[-1], population[-1].win, n_pop))
+    print('Generation %d: Average Score = %0.2f, Max Score = %0.2f, Policy Wins = %i, Population Size = %i' %(gen, np.mean(scores), scores[-1], population[-1].win, n_pop))
     n_pop -= n_sacrifice
 
     if gen % 100 == 0:
