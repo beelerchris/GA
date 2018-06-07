@@ -8,26 +8,37 @@ def selection(population, scores):
     while i == j:
         j = np.random.choice(range(len(population)), p = p)
 
-    return population[i], population[j]
+    r = np.random.uniform()
+    if r < 0.5:
+        return population[i], population[j]
+    else:
+        return population[j], population[i]
 
 def crossover(policy1, policy2, p = 0.5):
     new_policy = Policy(policy1.state, policy1.hidden_units, policy1.num_actions)
-    for i in range(len(policy1.W)):
+    for i in range(int(len(policy1.W) * p)):
         w = np.zeros((policy1.W[i].shape[0], policy1.W[i].shape[1]))
         b = np.zeros(policy1.B[i].shape[0])
         for j in range(len(policy1.W[i])):
             for k in range(len(policy1.W[i][j])):
-                r = np.random.uniform()
-                if r < p:
-                    w[j][k] = policy1.W[i][j][k]
-                else:
-                    w[j][k] = policy2.W[i][j][k]
+                w[j][k] = policy1.W[i][j][k]
+
         for j in range(len(policy1.B[i])):
-            r = np.random.uniform()
-            if r < 0.5:
-                b[j] = policy1.B[i][j]
-            else:
-                b[j] = policy2.B[i][j]
+            b[j] = policy1.B[i][j]
+
+        new_policy.W.append(w)
+        new_policy.B.append(b)
+
+    for i in range(int(len(policy2.W) * (1 - p)), len(policy2.W):
+        w = np.zeros((policy1.W[i].shape[0], policy1.W[i].shape[1]))
+        b = np.zeros(policy1.B[i].shape[0])
+        for j in range(len(policy2.W[i])):
+            for k in range(len(policy2.W[i][j])):
+                w[j][k] = policy2.W[i][j][k]
+
+        for j in range(len(policy2.B[i])):
+            b[j] = policy2.B[i][j]
+
         new_policy.W.append(w)
         new_policy.B.append(b)
 
@@ -40,17 +51,11 @@ def mutation(policy, p = 0.05):
         b = np.zeros(policy.B[i].shape[0])
         for j in range(len(policy.W[i])):
             for k in range(len(policy.W[i][j])):
-                r = np.random.uniform()
-                if r < p:
-                    w[j][k] = np.random.normal()
-                else:
-                    w[j][k] = policy.W[i][j][k]
+                w[j][k] = policy.W[i][j][k] + p * np.random.normal()
+
         for j in range(len(policy.B[i])):
-            r = np.random.uniform()
-            if r < p:
-                b[j] = np.random.normal()
-            else:
-                b[j] = policy.B[i][j]
+            b[j] = policy.B[i][j] + p * np.random.normal()
+
         new_policy.W.append(w)
         new_policy.B.append(b)
 

@@ -1,30 +1,29 @@
 import gym
 import gym.spaces
+import cleangym
 import numpy as np
 from helper import *
 from policy import Policy
 import os
-#from continuous_policy import Policy
 
 if not os.path.exists('./champions'):
     os.makedirs('./champions')
 
-n_gen = 1000 # Number of generations
+n_gen = 10000 # Number of generations
 n_pop = 100 # Starting population
 n_mutate = 25 # Number of mutations per generation
 n_breed = 25 # Number of crossovers per generation
 n_sacrifice = 50 # Number of removals per generation
 hidden_units = np.array([128, 128]) # Number of kernels per layer, len(hidden_units) = number of layers
 cross_p = 0.5 # Probability of policy1 weight being used during crossover
-mut_p = 0.05 # Probability of weight mutating
+mut_p = 0.15 # Probability of weight mutating
 wins = 10 # Number of wins to be considered the best
-game = 'CartPole-v0' # Game to play
+game = 'Carnot-v0' # Game to play
 
 env = gym.make(game)
 s0 = env.reset()
-s0 = np.reshape(s0, (s0.shape[0], 1))
+#s0 = np.reshape(s0, (s0.shape[0], 1))
 num_actions = int(env.action_space.n)
-#num_actions = 1
 
 name = 0
 if n_sacrifice > n_mutate + n_breed:
@@ -58,6 +57,11 @@ for generation in range(n_gen):
     population[-1].win += 1
     print('Generation %d: Max Score = %0.2f, Policy Wins = %i, Population Size = %i' %(gen, scores[-1], population[-1].win, n_pop))
     n_pop -= n_sacrifice
+
+    if gen % 100 == 0:
+        champion = population[-1]
+        np.savez('./champions/' + game + '_' + str(gen) + '.npz', w=champion.W, b=champion.B)
+        print('Champion has won ' str(champion.win + 1) + ' game(s)!')
 
     younglings = []
     mutants = []
