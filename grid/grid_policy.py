@@ -14,6 +14,15 @@ class Policy():
     def gen_random(self):
         self.policy = np.random.randint(0, self.num_actions, (self.size_X, self.size_Y))
 
+    def gen_perfect(self):
+        self.policy[self.temp_map[300], self.vol_map[10]] = 2
+        self.policy[self.temp_map[300], self.vol_map[8]] = 2
+        self.policy[self.temp_map[300], self.vol_map[6]] = 2
+        self.policy[self.temp_map[300], self.vol_map[4]] = 3
+        self.policy[self.temp_map[500], self.vol_map[6]] = 1
+        self.policy[self.temp_map[412], self.vol_map[8]] = 1
+        self.policy[self.temp_map[355], self.vol_map[10]] = 2
+
     def evaluate(self, state):
         Y = self.policy[self.temp_map[int(state[0])], self.vol_map[int(state[1]*10000.0)]]
 

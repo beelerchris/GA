@@ -9,7 +9,7 @@ import os
 if not os.path.exists('./champions'):
     os.makedirs('./champions')
 
-n_gen = 1000000 # Number of generations
+n_gen = 100 # Number of generations
 n_pop = 100 # Starting population
 n_mutate = 25 # Number of mutations per generation
 n_breed = 25 # Number of crossovers per generation
@@ -35,7 +35,12 @@ elif n_sacrifice >= n_pop - 1:
     print ('Sacrifice too large. n_sacrifice lowered to ' + str(n_sacrifice))
 
 population = []
-for i in range(n_pop):
+
+policy = Policy(num_actions)
+policy.gen_perfect()
+population.append(policy)
+
+for i in range(n_pop - 1):
     policy = Policy(num_actions)
     policy.gen_random()
     population.append(policy)
