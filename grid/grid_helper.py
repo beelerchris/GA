@@ -47,3 +47,11 @@ def evaluate_policy(policy, env):
     reward = reward / 3.0
 
     return reward
+
+def vis_policy(policy, env):
+    s = env.reset()
+    d = False
+    while not d:
+        a = policy.evaluate(s)
+        s, r, d, p = env.step(a)
+        print p, s[1], r
