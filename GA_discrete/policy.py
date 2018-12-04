@@ -1,18 +1,22 @@
 import numpy as np
+import gym
+import gym.spaces
 
 class Policy():
-    def __init__(self, state, hidden_units, num_actions):
-        self.state = state
-        self.size_X = self.state.shape[0]
-        self.size_Y = self.state.shape[1]
+    def __init__(self, shape, hidden_units, num_actions, game):
+        self.shape = shape
+        self.game = game
         self.hidden_units = hidden_units
         self.num_actions = num_actions
         self.win = 0
         self.W = []
         self.B = []
 
-    def gen_random(self):
-        w, b = layer(self.size_Y, self.hidden_units[0])
+    def gen_random(self, seed=None):
+        np.random.seed(seed)
+        self.W = []
+        self.B = []
+        w, b = layer(self.shape, self.hidden_units[0])
         self.W.append(w)
         self.B.append(b)
 
@@ -26,18 +30,15 @@ class Policy():
         self.B.append(b)
 
     def evaluate(self, state):
-        X = np.reshape(state, (self.size_X, self.size_Y))
-        Y = np.matmul(X, self.W[0]) + self.B[0]
+        Y = np.tanh(np.matmul(state, self.W[0]) + self.B[0])
 
         for i in range(1, len(self.W)):
-            Y = np.matmul(Y, self.W[i]) + self.B[i]
-
-        Y = np.sum(Y, 0)
+            Y = np.tanh(np.matmul(Y, self.W[i]) + self.B[i])
 
         return np.argmax(Y)
 
 def layer(num_in, num_out):
-    w = np.random.normal(size = (num_in, num_out))
-    b = np.random.normal(size = num_out)
+    w = np.random.normal(scale = 1.0/(num_in*num_out), size = (num_in, num_out))
+    b = np.random.normal(scale = 1.0/(num_in*num_out), size = num_out)
     return w, b
 

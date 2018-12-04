@@ -1,5 +1,8 @@
 import numpy as np
 from policy import Policy
+import gym
+import gym.spaces
+from reactive_control import rc_gym
 
 def selection(population, scores):
     p = scores / scores.sum()
@@ -14,8 +17,10 @@ def selection(population, scores):
     else:
         return population[j], population[i]
 
-def crossover(policy1, policy2, p = 0.5):
-    new_policy = Policy(policy1.state, policy1.hidden_units, policy1.num_actions)
+def crossover(cross_pop, p = 0.5):
+    policy1 = cross_pop[0]
+    policy2 = cross_pop[1]
+    new_policy = Policy(policy1.shape, policy1.hidden_units, policy1.num_actions, policy1.a_bound, policy1.game)
     for i in range(int(len(policy1.W) * p)):
         w = np.zeros((policy1.W[i].shape[0], policy1.W[i].shape[1]))
         b = np.zeros(policy1.B[i].shape[0])
@@ -29,7 +34,7 @@ def crossover(policy1, policy2, p = 0.5):
         new_policy.W.append(w)
         new_policy.B.append(b)
 
-    for i in range(int(len(policy2.W) * (1 - p)), len(policy2.W):
+    for i in range(int(len(policy2.W) * (1 - p)), len(policy2.W)):
         w = np.zeros((policy1.W[i].shape[0], policy1.W[i].shape[1]))
         b = np.zeros(policy1.B[i].shape[0])
         for j in range(len(policy2.W[i])):
@@ -44,8 +49,9 @@ def crossover(policy1, policy2, p = 0.5):
 
     return new_policy
 
-def mutation(policy, p = 0.05):
-    new_policy = Policy(policy.state, policy.hidden_units, policy.num_actions)
+def mutation(mutate_pop, p = 0.5):
+    policy = mutate_pop[0]
+    new_policy = Policy(policy.shape, policy.hidden_units, policy.num_actions, policy.a_bound, policy.game)
     for i in range(len(policy.W)):
         w = np.zeros((policy.W[i].shape[0], policy.W[i].shape[1]))
         b = np.zeros(policy.B[i].shape[0])
@@ -61,28 +67,28 @@ def mutation(policy, p = 0.05):
 
     return new_policy
 
-def evaluate_policy(policy, env):
+def evaluate_policy(policy):
+    game = policy.game
+    env = gym.make(game)
     reward = 0
-    for i in range(3):
+    for i in range(5):
         s = env.reset()
-        s = np.reshape(s, (s.shape[0], 1))
         d = False
         while not d:
             a = policy.evaluate(s)
             s, r, d, _ = env.step(a)
-            s = np.reshape(s, (s.shape[0], 1))
             reward += r
-    reward = reward / 3.0
 
-    return reward
+    return reward / 5.0
 
-def vis_policy(policy, env):
+def vis_policy(policy):
+    game = policy.game
+    env = gym.make(game)
     s = env.reset()
     env.render()
-    s = np.reshape(s, (s.shape[0], 1))
     d = False
     while not d:
         a = policy.evaluate(s)
         s, r, d, _ = env.step(a)
         env.render()
-        s = np.reshape(s, (s.shape[0], 1))
+    env.close()
