@@ -4,10 +4,12 @@ import gym.spaces
 from policy import Policy
 from helper import *
 import matplotlib.pyplot as plt
+from multiprocessing import Pool
 
 game = '2h2o-v0'
 gen = 1
 data = np.load('./champions/' + game + '/' + game + '_' + str(gen) + '.npz')
+cpus = 4
 
 env = gym.make(game)
 s0 = env.reset()
@@ -21,11 +23,15 @@ champion = Policy(shape, hidden_units, num_actions, a_bound, game)
 champion.W = data['w']
 champion.B = data['b']
 
-score = 0.0
-for k in range(10):
-    score += evaluate_policy(champion)
+pool = Pool(processes = cpues)
+champions = []
+for k in range(5):
+    champions.append(champion)
 
-score = score / 10.0
+scores = pool.map(evaluate_policy_single, champions)
+scores = np.array(scores)
+score = np.mean(score)
+
 print('Champion Average Score = ' + str(score))
 
 vis_policy(champion)
