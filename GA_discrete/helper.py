@@ -81,6 +81,19 @@ def evaluate_policy(policy):
 
     return reward / 10.0
 
+def evaluate_policy_sinlge(policy):
+    game = policy.game
+    env = gym.make(game)
+    reward = 0
+    s = env.reset()
+    d = False
+    while not d:
+        a = policy.evaluate(s)
+        s, r, d, _ = env.step(a)
+        reward += r
+
+    return reward
+
 def vis_policy(policy):
     game = policy.game
     env = gym.make(game)
