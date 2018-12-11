@@ -23,7 +23,7 @@ champion = Policy(shape, hidden_units, num_actions, a_bound, game)
 champion.W = data['w']
 champion.B = data['b']
 
-pool = Pool(processes = cpues)
+pool = Pool(processes = cpus)
 champions = []
 for k in range(5):
     champions.append(champion)
