@@ -5,9 +5,9 @@ from policy import Policy
 from helper import *
 import matplotlib.pyplot as plt
 
-game = 'MountainCarContinuous-v0'
-gen = 161
-data = np.load('./champions/' + game + '_' + str(gen) + '.npz')
+game = '2h2o-v0'
+gen = 1
+data = np.load('./champions/' + game + '/' + game + '_' + str(gen) + '.npz')
 
 env = gym.make(game)
 s0 = env.reset()

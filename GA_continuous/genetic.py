@@ -11,18 +11,21 @@ if not os.path.exists('./champions'):
     os.makedirs('./champions')
 
 n_gen = 1000 # Number of generations
-n_pop = 100 # Starting population
-n_mutate = 75 # Number of mutations per generation
+n_pop = 20 # Starting population
+n_mutate = 10 # Number of mutations per generation
 n_breed = 0 # Number of crossovers per generation
-n_sacrifice = 75 # Number of removals per generation
-hidden_units = np.array([256]) # Number of kernels per layer, len(hidden_units) = number of layers
-game = 'MountainCarContinuous-v0' # Game to play
-cpus = 40 # Number of processes to run
+n_sacrifice = 10 # Number of removals per generation
+hidden_units = np.array([1024]) # Number of kernels per layer, len(hidden_units) = number of layers
+game = '2h2o-v0' # Game to play
+cpus = 20 # Number of processes to run
 load = False # Load previous champion
 load_gen = 0 # Generation to load
 wins = 200 # Wins required for champion to be considered winner
 
 pool = Pool(processes = cpus)
+
+if not os.path.exists('./champions/' + game):
+    os.makedirs('./champions/' + game)
 
 env = gym.make(game)
 s0 = env.reset()
@@ -81,9 +84,12 @@ while not winning:
 
         if max_s0 < scores[-1]:
             champion = population[-1]
-            np.savez('./champions/' + game + '_' + str(gen) + '.npz', w=champion.W, b=champion.B, h=champion.hidden_units)
+            np.savez('./champions/' + game + '/' + game + '_' + str(gen) + '.npz', w=champion.W, b=champion.B, h=champion.hidden_units)
             print('Champion has won ' + str(champion.win + 1) + ' game(s)!')
             max_s0 = scores[-1]
+            os.system('cp -r /tmp/rc-game-2h2o-* ./DFTB_winners/possible_winners/')
+
+        os.system('rm -r /tmp/rc-game-2h2o-*')
 
         choice = np.ones(len(scores))
         cross_pop = []
@@ -114,7 +120,7 @@ while not winning:
     population = list(l2)
     champion = population[-1]
     champion.win += 1
-    np.savez('./champions/' + game + '.npz', w=champion.W, b=champion.B, h=champion.hidden_units)
+    np.savez('./champions/' + game + '/' + game + '.npz', w=champion.W, b=champion.B, h=champion.hidden_units)
     print('Champion has won ' + str(champion.win) + ' game(s)!')
 
     if champion.win > wins:
