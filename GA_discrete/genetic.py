@@ -24,6 +24,9 @@ wins = 200 # Wins required for champion to be considered winner
 
 pool = Pool(processes = cpus)
 
+if not os.path.exists('./champions/' + game):
+    os.makedirs('./champions/' + game)
+
 env = gym.make(game)
 s0 = env.reset()
 shape = s0.shape[0]
@@ -80,7 +83,7 @@ while not winning:
 
         if max_s0 < scores[-1]:
             champion = population[-1]
-            np.savez('./champions/' + game + '_' + str(gen) + '.npz', w=champion.W, b=champion.B, h=champion.hidden_units)
+            np.savez('./champions/' + game + '/' + game + '_' + str(gen) + '.npz', w=champion.W, b=champion.B, h=champion.hidden_units)
             print('Champion has won ' + str(champion.win + 1) + ' game(s)!')
             max_s0 = scores[-1]
 
@@ -113,7 +116,7 @@ while not winning:
     population = list(l2)
     champion = population[-1]
     champion.win += 1
-    np.savez('./champions/' + game + '.npz', w=champion.W, b=champion.B, h=champion.hidden_units)
+    np.savez('./champions/' + game + '/' + game + '_' + str(gen) + '.npz', w=champion.W, b=champion.B, h=champion.hidden_units)
     print('Champion has won ' + str(champion.win) + ' game(s)!')
 
     if champion.win > wins:

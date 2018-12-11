@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 game = 'Acrobot-v1'
 gen = 88
-data = np.load('./champions/' + game + '_' + str(gen) + '.npz')
+data = np.load('./champions/' + game + '/' + game + '_' + str(gen) + '.npz')
 
 env = gym.make(game)
 s0 = env.reset()
