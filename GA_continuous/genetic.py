@@ -5,19 +5,18 @@ from helper import *
 from policy import Policy
 from multiprocessing import Pool
 import os
-from reactive_control import rc_gym
 
 if not os.path.exists('./champions'):
     os.makedirs('./champions')
 
-n_gen = 1000 # Number of generations
-n_pop = 20 # Starting population
-n_mutate = 10 # Number of mutations per generation
+n_gen = 100 # Number of generations
+n_pop = 100 # Starting population
+n_mutate = 75 # Number of mutations per generation
 n_breed = 0 # Number of crossovers per generation
-n_sacrifice = 10 # Number of removals per generation
-hidden_units = np.array([1024]) # Number of kernels per layer, len(hidden_units) = number of layers
-game = '2h2o-v0' # Game to play
-cpus = 20 # Number of processes to run
+n_sacrifice = 75 # Number of removals per generation
+hidden_units = np.array([256]) # Number of kernels per layer, len(hidden_units) = number of layers
+game = 'Pendulum-v0' # Game to play
+cpus = 4 # Number of processes to run
 load = False # Load previous champion
 load_gen = 0 # Generation to load
 wins = 200 # Wins required for champion to be considered winner
