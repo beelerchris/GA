@@ -5,7 +5,6 @@ from helper import *
 from policy import Policy
 from multiprocessing import Pool
 import os
-from reactive_control import rc_gym
 
 if not os.path.exists('./champions'):
     os.makedirs('./champions')
@@ -17,8 +16,8 @@ n_breed = 0 # Number of crossovers per generation
 n_sacrifice = 75 # Number of removals per generation
 hidden_units = np.array([256]) # Number of kernels per layer, len(hidden_units) = number of layers
 game = 'Acrobot-v1' # Game to play
-cpus = 40 # Number of processes to run
-load = True # Load previous champion
+cpus = 4 # Number of processes to run
+load = False # Load previous champion
 load_gen = 75 # Generation to load
 wins = 200 # Wins required for champion to be considered winner
 
