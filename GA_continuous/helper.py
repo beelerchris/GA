@@ -2,7 +2,6 @@ import numpy as np
 from policy import Policy
 import gym
 import gym.spaces
-from reactive_control import rc_gym
 
 def selection(population, scores):
     p = scores / scores.sum()
