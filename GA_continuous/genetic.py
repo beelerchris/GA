@@ -86,9 +86,6 @@ while not winning:
             np.savez('./champions/' + game + '/' + game + '_' + str(gen) + '.npz', w=champion.W, b=champion.B, h=champion.hidden_units)
             print('Champion has won ' + str(champion.win + 1) + ' game(s)!')
             max_s0 = scores[-1]
-            os.system('cp -r /tmp/rc-game-2h2o-* ./DFTB_winners/possible_winners/')
-
-        os.system('rm -r /tmp/rc-game-2h2o-*')
 
         choice = np.ones(len(scores))
         cross_pop = []
